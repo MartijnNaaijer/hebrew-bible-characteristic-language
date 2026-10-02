@@ -16,9 +16,10 @@ book/chapter navigation, which may later be published with GitHub Pages. See `RE
 - The git repository is **hebrew-bible-characteristic-language**, on branch `main`. The project folder was
   renamed to match; it was previously `jeremia_vertalingen_lugtigheid`.
   Repo-local git config: `user.name "Martijn Naaijer"`, `core.autocrlf false`.
-- The repo is not on GitHub yet, and `gh` is not installed. The intended setup is
-  `https://github.com/MartijnNaaijer/hebrew-bible-characteristic-language`, with Pages serving from
-  `main` / `docs` (the `docs/.nojekyll` file is already there). Ask before pushing or publishing anything.
+- Remote `origin`: `https://github.com/MartijnNaaijer/hebrew-bible-characteristic-language` (created by the
+  user, first pushed 2026-10-02). `gh` is not installed. Pages is meant to serve from `main` / `docs`
+  (the `docs/.nojekyll` file is already there). Ask before pushing or publishing anything.
+- License: CC BY-NC 4.0 (`LICENSE`). The README cites the BHSA and Stipp.
 - `docs/` (including the ~170 MB of generated data) is committed on purpose, so that Pages can serve it.
   `data/raw/` (the Stipp page cache) is ignored.
 
