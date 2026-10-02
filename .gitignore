@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# cached pages of Stipp's synopsis; parse_lxx.py downloads them again when needed
+data/raw/

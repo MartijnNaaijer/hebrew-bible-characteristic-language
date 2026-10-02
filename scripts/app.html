@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hebrew Bible Language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600&family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f7f5f0; --surface:#fcfcfb; --surface-2:#f0ede6; --rule:#dcd7cc;
+  --ink:#1b1a17; --ink-2:#52514e; --ink-3:#7a776f;
+  --accent:#7a3b1d;
+  --c-only:#2a78d6; --c-restricted:#eb6834; --c-pref:#1baf7a; --c-rare:#8a877f;
+  --t-plus:rgba(227,73,72,.16); --t-plus-line:#c63b3a; --t-var:rgba(237,161,0,.20); --t-var-line:#a87000;
+  --sel:rgba(42,120,214,.16); --flash:rgba(237,161,0,.35);
+  --bar:#b9b5ab;
+}
+@media (prefers-color-scheme:dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme:dark;
+    --bg:#121210; --surface:#1a1a19; --surface-2:#232320; --rule:#383835;
+    --ink:#f2f1ec; --ink-2:#c3c2b7; --ink-3:#8f8d84;
+    --accent:#e0a47e;
+    --c-only:#3987e5; --c-restricted:#d95926; --c-pref:#199e70; --c-rare:#8f8d84;
+    --t-plus:rgba(230,103,103,.22); --t-plus-line:#e66767; --t-var:rgba(201,133,0,.26); --t-var-line:#dcb04a;
+    --sel:rgba(57,135,229,.26); --flash:rgba(201,133,0,.45);
+    --bar:#55544f;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121210; --surface:#1a1a19; --surface-2:#232320; --rule:#383835;
+  --ink:#f2f1ec; --ink-2:#c3c2b7; --ink-3:#8f8d84;
+  --accent:#e0a47e;
+  --c-only:#3987e5; --c-restricted:#d95926; --c-pref:#199e70; --c-rare:#8f8d84;
+  --t-plus:rgba(230,103,103,.22); --t-plus-line:#e66767; --t-var:rgba(201,133,0,.26); --t-var-line:#dcb04a;
+  --sel:rgba(57,135,229,.26); --flash:rgba(201,133,0,.45);
+  --bar:#55544f;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+.heb{font-family:"SBL Hebrew","Ezra SIL","Noto Serif Hebrew","Times New Roman",serif;direction:rtl;unicode-bidi:isolate}
+.grk{font-family:"Gentium Plus","Noto Serif",Georgia,serif}
+.muted{color:var(--ink-3)}
+.small{font-size:12.5px}
+
+/* ---------- header */
+header.top{border-bottom:1px solid var(--rule);background:var(--surface)}
+.top-in{max-width:1500px;margin:0 auto;padding:14px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 24px}
+.top h1{font:600 21px/1.2 "Noto Serif",Georgia,serif;margin:0 0 2px}
+.top .sub{color:var(--ink-2);font-size:13px;margin:0 0 10px}
+.titles{flex:1 1 360px}
+nav.tabs{display:flex;gap:2px}
+nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 14px;cursor:pointer;color:var(--ink-2);font-weight:500}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.theme{background:none;border:1px solid var(--rule);border-radius:6px;padding:4px 8px;cursor:pointer;margin-bottom:8px;color:var(--ink-2)}
+
+/* ---------- filter bar */
+.filters{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule)}
+.filters-in{max-width:1500px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+.fgroup{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.fgroup > .lab{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-right:2px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:2px 10px;cursor:pointer;font-size:13px;user-select:none;color:var(--ink-2)}
+.chip[aria-pressed="true"]{border-color:var(--ink-3);color:var(--ink);background:var(--surface-2)}
+.chip[aria-pressed="false"]{opacity:.6}
+.chip[aria-pressed="false"] .sw{opacity:.35}
+.sw{width:14px;height:0;border-bottom:3px solid var(--c);display:inline-block;border-radius:2px}
+.sw.rare{border-bottom:3px dotted var(--c-rare)}
+.sw.pref{border-bottom-style:dashed}
+.chip .n{font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:11.5px}
+select.sm,input.sm{border:1px solid var(--rule);background:var(--surface);border-radius:6px;padding:2px 6px;font-size:13px}
+input.search{width:190px}
+
+/* ---------- layout */
+main{max-width:1500px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:20px;align-items:start}
+@media (max-width:1000px){main{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.filters{position:static}.vtext{font-size:22px}.tiles{grid-template-columns:repeat(2,1fr)}}
+.view[hidden]{display:none}
+aside.panel{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px}
+@media (max-width:1000px){aside.panel{position:static;max-height:none}}
+
+/* ---------- reading view */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2);margin:0 0 12px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.tint{display:inline-block;width:16px;height:12px;border-radius:2px}
+.tint.plus{background:var(--t-plus);border-top:2px dotted var(--t-plus-line)}
+.tint.var{background:var(--t-var)}
+.verse{display:grid;grid-template-columns:1fr 44px;gap:0 10px;padding:6px 0 10px;border-bottom:1px solid var(--rule);scroll-margin-top:80px}
+.verse.flash{animation:flash 1.6s ease-out}
+@keyframes flash{from{background:var(--flash)}to{background:transparent}}
+.vnum{grid-column:2;grid-row:1;text-align:left;color:var(--ink-3);font-size:12px;padding-top:9px;font-variant-numeric:tabular-nums}
+.vnum b{display:block;color:var(--ink-2);font-size:14px}
+.vtext{grid-column:1;grid-row:1;font-size:25px;line-height:2.15;text-align:right}
+.note-ins{grid-column:1/3;font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0 0;border-radius:4px}
+.w{cursor:pointer;border-radius:3px;padding:0 1px;text-decoration:none;text-underline-offset:9px;text-decoration-thickness:2.5px;text-decoration-skip-ink:none}
+.w.cat-only{text-decoration-line:underline;text-decoration-color:var(--c-only);text-decoration-thickness:3.5px}
+.w.cat-restricted{text-decoration-line:underline;text-decoration-color:var(--c-restricted)}
+.w.cat-pref{text-decoration-line:underline;text-decoration-style:dashed;text-decoration-color:var(--c-pref)}
+.w.cat-hapax,.w.cat-rare{text-decoration-line:underline;text-decoration-style:dotted;text-decoration-color:var(--c-rare)}
+.lxx-on .w.lx-plus{background:var(--t-plus);box-shadow:inset 0 2px 0 -0px transparent;border-top:2px dotted var(--t-plus-line)}
+.lxx-on .w.lx-var{background:var(--t-var)}
+.w:hover{outline:1px solid var(--ink-3)}
+.w.sel{background:var(--sel) !important;outline:1px solid var(--c-only)}
+.w.wsel{outline:2px solid var(--ink-2)}
+.gw{white-space:nowrap}
+
+/* Stipp synopsis under verse */
+.syn{grid-column:1/3;margin-top:6px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);font-size:13px}
+.syn-h{display:flex;justify-content:space-between;gap:8px;padding:4px 10px;border-bottom:1px solid var(--rule);color:var(--ink-3);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.srow{display:grid;grid-template-columns:22px minmax(0,1fr) minmax(0,1fr);gap:4px 12px;padding:5px 10px;border-bottom:1px dotted var(--rule)}
+.srow:last-child{border-bottom:0}
+.srow .cl{color:var(--ink-3);font-size:11px;padding-top:5px}
+.srow .og{font-size:19px;line-height:1.8;text-align:right}
+.srow .og:empty::after{content:"—";color:var(--ink-3)}
+.srow .gk{font-size:14.5px;line-height:1.6;padding-top:3px}
+.srow .gk:empty::after{content:"—";color:var(--ink-3)}
+.srow .nt{grid-column:2/4;font-size:11.5px;color:var(--ink-3)}
+.og .minus{color:#1d6fb8;font-weight:600}
+:root[data-theme="dark"] .og .minus{color:#7cb8f0}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])) .og .minus{color:#7cb8f0}}
+.og .var{background:var(--t-var)}
+
+/* ---------- inventory table */
+.tbl-wrap{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:auto}
+table.inv{border-collapse:collapse;width:100%;font-size:13.5px}
+.inv th{position:sticky;top:0;background:var(--surface-2);text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);padding:8px 10px;border-bottom:1px solid var(--rule);cursor:pointer;white-space:nowrap}
+.inv th.num,.inv td.num{text-align:right;font-variant-numeric:tabular-nums}
+.inv th[aria-sort="ascending"]::after{content:" ▲";font-size:9px}
+.inv th[aria-sort="descending"]::after{content:" ▼";font-size:9px}
+.inv td{padding:6px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.inv tr{cursor:pointer}
+.inv tbody tr:hover{background:var(--surface-2)}
+.inv tr.cur{background:var(--sel)}
+.inv td.heb{font-size:19px;text-align:right;white-space:nowrap}
+.inv td.gl{color:var(--ink-2);max-width:260px}
+.count-line{font-size:13px;color:var(--ink-2);margin:0 0 10px}
+.catdot{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+
+/* ---------- detail panel */
+.panel h2{font:600 12px/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 8px}
+.panel .empty{color:var(--ink-2);font-size:14px}
+.d-title{font-size:30px;line-height:1.5;text-align:right;margin:0}
+.d-gloss{color:var(--ink-2);font-size:14px;margin:2px 0 8px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.badge{font-size:11.5px;border:1px solid var(--rule);border-radius:4px;padding:1px 7px;color:var(--ink-2);background:var(--surface-2);display:inline-flex;align-items:center;gap:6px}
+.badge.lx-plus{background:var(--t-plus);border-color:var(--t-plus-line)}
+.badge.lx-var{background:var(--t-var)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.tile{background:var(--surface-2);border-radius:6px;padding:6px 8px}
+.tile b{display:block;font-size:19px;font-variant-numeric:tabular-nums;line-height:1.2}
+.tile span{font-size:11px;color:var(--ink-3)}
+.bars{display:grid;grid-template-columns:96px 1fr;gap:3px 8px;align-items:center;font-size:12.5px}
+.bars .bk{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars .bk.home{color:var(--ink);font-weight:600}
+.bars .track{position:relative;height:16px;display:flex;align-items:center;gap:6px}
+.bars .bar{height:10px;border-radius:0 4px 4px 0;background:var(--bar);min-width:2px}
+.bars .bar.home{background:var(--c-only)}
+.bars .val{color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:12px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;font-size:12px}
+.seg button{border:0;background:var(--surface);padding:2px 8px;cursor:pointer;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+.stats{font-size:12.5px;color:var(--ink-2)}
+.stats dt{float:left;clear:left;width:150px;color:var(--ink-3)}
+.stats dd{margin:0 0 2px 150px;font-variant-numeric:tabular-nums}
+.vlinks{display:flex;flex-wrap:wrap;gap:4px}
+.vlinks button{border:1px solid var(--rule);background:var(--surface-2);border-radius:4px;padding:1px 8px;cursor:pointer;font-size:12.5px}
+.conc-book{font-size:12px;font-weight:600;color:var(--ink-2);margin:10px 0 2px;border-bottom:1px solid var(--rule)}
+.conc-line{display:grid;grid-template-columns:76px 1fr;gap:8px;padding:3px 0;border-bottom:1px dotted var(--rule)}
+.conc-line .ref{font-size:12px;color:var(--ink-3);padding-top:6px;white-space:nowrap}
+.conc-line .heb{font-size:18px;line-height:1.75;text-align:right}
+.conc-line mark{background:var(--sel);color:inherit;border-radius:3px;padding:0 1px;font-weight:600}
+.more{margin-top:8px;border:1px solid var(--rule);background:var(--surface-2);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12.5px}
+.ilist{list-style:none;margin:0;padding:0}
+.ilist li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+.ilist li:hover{background:var(--surface-2);border-color:var(--rule)}
+.ilist .heb{font-size:20px;text-align:right}
+.ilist .meta{grid-column:1/3;font-size:12px;color:var(--ink-3)}
+.back{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font-size:13px}
+
+/* ---------- tooltip */
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:12.5px;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:320px;display:none}
+#tip .h{font-size:20px}
+#tip .m{color:var(--ink-2)}
+
+/* ---------- method page */
+.prose{max-width:760px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:8px 24px 20px}
+.prose h2{font:600 18px/1.3 "Noto Serif",Georgia,serif;margin:22px 0 6px}
+.prose p,.prose li{color:var(--ink-2)}
+.prose code{background:var(--surface-2);padding:0 4px;border-radius:3px;font-size:13px}
+
+/* ---------- book / chapter navigation */
+.nav-in{max-width:1500px;margin:0 auto;padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.navb{border:1px solid var(--rule);background:var(--surface);border-radius:6px;width:30px;height:28px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink-2)}
+.navb:hover{border-color:var(--ink-3)}
+#n-book{min-width:150px}
+.allb{border:1px solid var(--rule);background:var(--surface);border-radius:6px;height:28px;padding:0 10px;cursor:pointer;color:var(--ink-2);font-size:13px}
+.allb:hover{border-color:var(--ink-3)}
+/* ---------- overview of all books */
+.home{max-width:1500px;margin:0 auto;padding:16px}
+.home .intro{max-width:820px;color:var(--ink-2);margin:4px 0 14px}
+.home .cont{display:inline-block;margin:0 0 16px;font-weight:500}
+.home h2{font:600 12px/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 8px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+.bk-card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:10px 12px}
+.bk-card h3{margin:0 0 6px;font:600 15px/1.3 "Noto Serif",Georgia,serif;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bk-card h3 span{font:400 12px Inter,sans-serif;color:var(--ink-3)}
+.chs{display:flex;flex-wrap:wrap;gap:3px}
+.chs a{display:inline-block;min-width:30px;text-align:center;padding:2px 4px;border:1px solid var(--rule);border-radius:4px;text-decoration:none;color:var(--ink-2);font-size:12.5px;font-variant-numeric:tabular-nums;background:var(--surface-2)}
+.chs a:hover{border-color:var(--accent);color:var(--ink)}
+.chs a.lxx{border-color:var(--t-var-line)}
+.conc-line a.ref{text-decoration:none;color:var(--ink-3)}
+.conc-line a.ref:hover{color:var(--accent);text-decoration:underline}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="titles">
+    <h1 id="title">Characteristic language in the Hebrew Bible</h1>
+    <p class="sub" id="subtitle">For every chapter: words and phrases found only in its book, shared with few other books, or clearly preferred by the book. Data: BHSA 2021 (ETCBC). For Jeremiah and 2 Kings 25, MT and LXX are compared using Stipp's <i>Textkritische Synopse</i>.</p>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-view="text" aria-selected="true">Text</button>
+    <button role="tab" data-view="inv" aria-selected="false">Inventory</button>
+    <button role="tab" data-view="method" aria-selected="false">Method</button>
+  </nav>
+  <button class="theme" id="theme" title="Switch light / dark">◐ Theme</button>
+</div>
+<div class="nav-in">
+  <button class="allb" id="allb" title="Overview of all books and chapters">☰ All books</button>
+  <button class="navb" id="prev" title="Previous chapter" aria-label="previous chapter">‹</button>
+  <select class="sm" id="n-book" aria-label="book"></select>
+  <select class="sm" id="n-ch" aria-label="chapter"></select>
+  <button class="navb" id="next" title="Next chapter" aria-label="next chapter">›</button>
+  <span class="muted small" id="n-info"></span>
+</div></header>
+
+<div class="home" id="home" hidden></div>
+
+<div class="filters"><div class="filters-in">
+  <div class="fgroup" id="f-cat"><span class="lab">Category</span></div>
+  <div class="fgroup" id="f-kind"><span class="lab">Type</span></div>
+  <div class="fgroup">
+    <span class="lab">Verses</span>
+    <select class="sm" id="f-from" aria-label="from verse"></select>–<select class="sm" id="f-to" aria-label="to verse"></select>
+  </div>
+  <div class="fgroup">
+    <span class="lab">Show</span>
+    <button class="chip" id="f-names" aria-pressed="true" title="Items that contain a proper name">Items with proper names</button>
+    <button class="chip lxxonly" id="f-lxx" aria-pressed="true">MT ≠ LXX marking</button>
+    <button class="chip lxxonly" id="f-syn" aria-pressed="false">Stipp synopsis</button>
+  </div>
+</div></div>
+
+<main>
+  <section class="view" id="v-text">
+    <div class="legend">
+      <span><i class="sw" style="--c:var(--c-only);border-bottom-width:4px"></i><span class="lg-only"></span></span>
+      <span><i class="sw" style="--c:var(--c-restricted)"></i><span class="lg-restricted"></span></span>
+      <span><i class="sw pref" style="--c:var(--c-pref)"></i><span class="lg-pref"></span></span>
+      <span><i class="sw rare"></i>Hapax / rare word</span>
+      <span class="lxxonly"><i class="tint plus"></i>MT plus (absent from LXX)</span>
+      <span class="lxxonly"><i class="tint var"></i>MT ≠ LXX variant</span>
+      <span class="muted">Click a word to see its items. Hover over a word for lexeme, gloss and morphology.</span>
+    </div>
+    <div id="text"><p class="muted">Loading…</p></div>
+  </section>
+
+  <section class="view" id="v-inv" hidden>
+    <div class="fgroup" style="margin-bottom:10px">
+      <input class="sm search" id="f-q" type="search" placeholder="Search Hebrew, gloss or lexeme" aria-label="search">
+      <select class="sm lxxonly" id="f-lx" aria-label="LXX filter">
+        <option value="">MT/LXX: all items</option>
+        <option value="plus">entirely MT plus (absent from LXX)</option>
+        <option value="part">partly MT plus / variant</option>
+        <option value="common">present in both</option>
+      </select>
+      <button class="chip" id="f-only" aria-pressed="false">Only in this chapter (repeated within it)</button>
+    </div>
+    <p class="count-line" id="count"></p>
+    <div class="tbl-wrap"><table class="inv" id="inv">
+      <thead><tr>
+        <th data-k="label" style="text-align:right">Hebrew</th>
+        <th data-k="gloss">Gloss</th>
+        <th data-k="kind">Type</th>
+        <th data-k="cat">Category</th>
+        <th data-k="v1" class="num">Verse</th>
+        <th data-k="freq" class="num" title="Occurrences in the whole MT">MT</th>
+        <th data-k="home" class="num" id="th-home" title="Occurrences in this book">Book</th>
+        <th data-k="nother" class="num" title="Number of other books">Other books</th>
+        <th data-k="ratio" class="num" title="Relative frequency in this book / elsewhere">Ratio</th>
+        <th data-k="lx" class="lxxonly">LXX</th>
+      </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="view" id="v-method" hidden><div class="prose" id="method"></div></section>
+
+  <aside class="panel" id="panel" aria-live="polite"></aside>
+</main>
+<div id="tip"></div>
+
+<script>
+(function(){
+"use strict";
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = s => document.querySelector(s);
+const store = {get(k,d){try{const v=localStorage.getItem('hblang.'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+               set(k,v){try{localStorage.setItem('hblang.'+k,JSON.stringify(v))}catch(e){}}};
+{ const t=store.get('theme',null); if(t) document.documentElement.setAttribute('data-theme',t); }
+
+// ---------- data loading (plain <script> tags, so it also works from file://)
+function loadScript(src){
+  return new Promise((ok,fail)=>{ const s=document.createElement('script'); s.src=src; s.onload=()=>{s.remove();ok()};
+    s.onerror=()=>{s.remove();fail(new Error('cannot load '+src))}; document.head.appendChild(s); });
+}
+let IDX = null; const CHAPTERS = {}; const TEXT = {};
+window.__index = d => { IDX = d; };
+window.__chapter = d => { CHAPTERS[d.book+'/'+d.chapter] = d; };
+window.__text = d => { TEXT[d.book] = d.verses; };
+function getChapter(book, ch){
+  const k = book+'/'+ch;
+  return CHAPTERS[k] ? Promise.resolve(CHAPTERS[k]) : loadScript('data/ch/'+book+'/'+ch+'.js').then(()=>CHAPTERS[k]);
+}
+function getTexts(books){ return Promise.all([...new Set(books)].filter(b=>!TEXT[b]).map(b=>loadScript('data/text/'+b+'.js'))); }
+
+// ---------- constants
+const KINDS = {lex:'Word', ngram:'Phrase', pair:'Collocation', syn:'Verb + argument'};
+const CAT_ORDER = ['only','hapax','restricted','pref','rare'];
+const CAT_COLOR = c => 'var(--c-'+(c==='hapax'||c==='rare'?'rare':c)+')';
+const ROLE = {object:'object', subject:'subject', complement:'complement'};
+const INSERT_NOTES = {'Jeremia/25': {13:'In the LXX the oracles against the nations (MT Jer 46–51) follow here, after 25:13a. MT 25:14 has no counterpart in the LXX, and MT 25:15–38 continues as LXX chapter 32.'}};
+let P_ = null, UNIT = {}, BOOKS = {}, BOOKLIST = [];
+let CATS = {};
+
+// ---------- state
+const S = {
+  cats: store.get('cats', CAT_ORDER.slice()),
+  kinds: store.get('kinds', Object.keys(KINDS)),
+  names: store.get('names', true), lxx: store.get('lxx', true), syn: store.get('syn', false),
+  from: 1, to: 1, q:'', lxf:'', only:false,
+  sort: store.get('sort', {k:'v1', d:1}),
+  view: 'text', item: null, word: null, rel: store.get('rel', false)
+};
+// current chapter
+let C = null, W = [], ITEMS = [], byId = {}, STATUS = [], X = null, wVerse = [], HOME = '', HB = null;
+
+function itemPrep(){
+  const NAMES = new Set(W.filter(w=>w.m && w.m.sp==='nmpr').map(w=>w.lex));
+  const surf = idx => idx.map(i=>W[i].t+(W[i].tr||'')).join('').replace(/[\s־׃׀]+$/,'');
+  ITEMS.forEach(it=>{
+    it.here.sort((a,b)=>a[0]-b[0]);
+    it.verses = [...new Set(it.here.map(h=>wVerse[h[0]]))].sort((a,b)=>a-b);
+    it.v1 = it.verses[0];
+    if(it.kind==='lex'){ it.label = it.lex[0]; it.form = surf(it.here[0]); }
+    else if(it.kind==='ngram'){ it.label = surf(it.here[0]); }
+    else if(it.kind==='pair'){ it.label = it.lex.join(' … '); }
+    else { it.label = it.lex.join(' '); }
+    it.gloss = it.gl.join(' · ') + (it.kind==='syn' ? '  ('+ROLE[it.role]+')' : '');
+    it.isName = it.key.some(k=>NAMES.has(k));
+    const st = it.here.flat().map(i=>STATUS[i]);
+    const nPlus = st.filter(s=>s==='plus').length, nVar = st.filter(s=>s==='var').length;
+    it.lx = nPlus===st.length ? 'plus' : (nPlus||nVar) ? 'part' : 'common';
+    it.onlyHere = it.nother===0 && it.home===it.here.length && it.cat!=='hapax';
+    it.search = (it.label+' '+(it.form||'')+' '+it.lex.join(' ')+' '+it.gloss+' '+it.key.join(' ')).toLowerCase()
+       .normalize('NFD').replace(/[֑-ׇ]/g,'');
+  });
+  byId = {}; ITEMS.forEach(i=>byId[i.id]=i);
+}
+function visible(it){
+  if(!S.cats.includes(it.cat) || !S.kinds.includes(it.kind)) return false;
+  if(!S.names && it.isName) return false;
+  if(!it.verses.some(v=>v>=S.from && v<=S.to)) return false;
+  return true;
+}
+function visibleInv(it){
+  if(!visible(it)) return false;
+  if(X && S.lxf && it.lx!==S.lxf) return false;
+  if(S.only && !it.onlyHere) return false;
+  if(S.q){ const q=S.q.toLowerCase().normalize('NFD').replace(/[֑-ׇ]/g,''); if(!it.search.includes(q)) return false; }
+  return true;
+}
+const ref = (v)=> HB.abbr+' '+C.chapter+':'+v;
+
+// ---------- navigation
+function buildNav(){
+  const nb = $('#n-book');
+  IDX.books.forEach(b=>nb.add(new Option(b.en, b.id)));
+  nb.onchange = ()=>go(nb.value, 1);
+  $('#n-ch').onchange = e=>go(nb.value, +e.target.value);
+  $('#prev').onclick = ()=>step(-1); $('#next').onclick = ()=>step(1);
+  $('#allb').onclick = ()=>{ location.hash = '#'; };
+  addEventListener('hashchange', fromHash);
+}
+function step(d){
+  const i = BOOKLIST.indexOf(C.book); let ch = C.chapter + d, b = BOOKS[C.book];
+  if(ch<1){ if(i===0) return; b = BOOKS[BOOKLIST[i-1]]; ch = b.chapters; }
+  else if(ch>b.chapters){ if(i===BOOKLIST.length-1) return; b = BOOKS[BOOKLIST[i+1]]; ch = 1; }
+  go(b.id, ch);
+}
+function go(book, ch, item){
+  const h = '#'+book+'/'+ch+(item!=null?'/item='+item:'');
+  if(location.hash!==h){ location.hash = h; } else fromHash();
+}
+let loadSeq = 0;
+function fromHash(){
+  const m = location.hash.match(/^#([A-Za-z_]+)\/(\d+)(?:\/item=(\d+))?/);
+  if(!m || !BOOKS[m[1]]){ showHome(); return; }
+  showChapterUI(true);
+  let book = m[1], ch = +m[2];
+  ch = Math.max(1, Math.min(ch, BOOKS[book].chapters));
+  const item = m && m[3]!=null ? +m[3] : null;
+  if(C && C.book===book && C.chapter===ch){ if(item!=null && byId[item] && item!==S.item) showItem(item); return; }
+  const seq = ++loadSeq;
+  $('#text').innerHTML = '<p class="muted">Loading '+esc(BOOKS[book].en)+' '+ch+'…</p>';
+  getChapter(book, ch).then(d=>{ if(seq!==loadSeq) return; setChapter(d); if(item!=null && byId[item]) showItem(item); })
+    .catch(e=>{ $('#text').innerHTML = '<p class="muted">Could not load the data for this chapter ('+esc(e.message)+'). Run <code>python scripts/build.py</code> to generate it.</p>'; });
+}
+
+// ---------- overview of all books
+const GROUPS = [['Torah',0,5],['Former Prophets',5,11],['Latter Prophets',11,26],['Writings',26,39]];
+function showChapterUI(on){
+  document.querySelectorAll('.filters, main, nav.tabs, #prev, #next, #n-book, #n-ch, #n-info').forEach(e=>e.hidden=!on);
+  $('#home').hidden = on;
+}
+function showHome(){
+  showChapterUI(false);
+  document.title = 'Hebrew Bible Language';
+  $('#title').textContent = 'Characteristic language in the Hebrew Bible';
+  const last = store.get('last', null);
+  let h = '<p class="intro">Choose a chapter. Each chapter is compared with its own book: words found only in that book, words and phrases shared with at most '+P_.max_other+
+    ' other books, and expressions the book clearly prefers. 1–2 Samuel, 1–2 Kings and 1–2 Chronicles each count as one book. Chapters with a yellow border have an MT/LXX layer (Stipp).</p>';
+  if(last && BOOKS[last[0]]) h += '<a class="cont" href="#'+last[0]+'/'+last[1]+'">Continue with '+esc(BOOKS[last[0]].en)+' '+last[1]+' →</a>';
+  GROUPS.forEach(([name,a,b])=>{
+    h += '<h2>'+name+'</h2><div class="bgrid">';
+    IDX.books.slice(a,b).forEach(bk=>{
+      let chs=''; for(let i=1;i<=bk.chapters;i++) chs += '<a href="#'+bk.id+'/'+i+'"'+(bk.lxx.includes(i)?' class="lxx" title="with MT/LXX layer"':'')+'>'+i+'</a>';
+      h += '<div class="bk-card"><h3>'+esc(bk.en)+'<span>'+bk.chapters+(bk.chapters>1?' chapters':' chapter')+'</span></h3><div class="chs">'+chs+'</div></div>';
+    });
+    h += '</div>';
+  });
+  $('#home').innerHTML = h;
+  scrollTo(0,0);
+}
+
+function setChapter(d){
+  C = d; W = d.words; ITEMS = d.items; X = d.lxx; HOME = d.home; HB = BOOKS[d.book];
+  STATUS = X ? X.word_status : W.map(()=>'common');
+  wVerse = []; d.verses.forEach(v=>v.words.forEach(i=>wVerse[i]=v.v));
+  store.set('last',[d.book,d.chapter]);
+  itemPrep();
+  S.item = null; S.word = null; S.from = 1; S.to = d.verses.length ? d.verses[d.verses.length-1].v : 1; S.q=''; $('#f-q').value='';
+  const hn = UNIT[HOME].en;
+  CATS = {
+    only:{short:'Unique word', name:'Word only in '+hn, desc:'a word that occurs at least twice in the MT, only in '+hn},
+    restricted:{short:'Restricted', name:hn+' + ≤ '+P_.max_other+' other books', desc:'occurs in '+hn+' and in at most '+P_.max_other+' other books (possibly none)'},
+    pref:{short:'Preferred', name:'Preferred by '+hn, desc:'occurs widely, but is markedly more frequent in '+hn+' (log-likelihood ≥ '+P_.g2_min+', ratio ≥ '+P_.ratio_min+', ≥ '+P_.home_min+'× in '+hn+')'},
+    hapax:{short:'Hapax', name:'Hapax legomenon', desc:'occurs only once in the MT'},
+    rare:{short:'Rare', name:'Rare word', desc:'occurs at most '+P_.rare_max+' times in the MT, in several books'}
+  };
+  document.title = HB.en+' '+d.chapter+' · Language';
+  $('#title').textContent = 'Characteristic language in '+HB.en+' '+d.chapter;
+  $('#n-book').value = d.book;
+  const nc = $('#n-ch'); nc.innerHTML=''; for(let i=1;i<=HB.chapters;i++) nc.add(new Option(i, i)); nc.value = d.chapter;
+  $('#n-info').textContent = (HB.unit!==HB.id ? 'Compared as part of the book '+hn+'. ' : '')+W.length+' words, '+ITEMS.length+' items';
+  $('.lg-only').textContent = 'Word only in '+hn;
+  $('.lg-restricted').textContent = hn+' + ≤ '+P_.max_other+' other books';
+  $('.lg-pref').textContent = 'Preferred by '+hn;
+  $('#th-home').textContent = HB.abbr.replace(/^[12] /,'');
+  $('#th-home').title = 'Occurrences in '+hn;
+  document.querySelectorAll('.lxxonly').forEach(e=>e.hidden=!X);
+  // chips with counts for this chapter
+  for(const [box,key,list,lab] of [[$('#f-cat'),'cats',CAT_ORDER,c=>sw(c)+esc(CATS[c].short)],[$('#f-kind'),'kinds',Object.keys(KINDS),k=>esc(KINDS[k])]]){
+    box.querySelectorAll('.chip').forEach(e=>e.remove());
+    list.forEach(id=>{
+      const n = ITEMS.filter(i=>(key==='cats'?i.cat:i.kind)===id).length;
+      const b = document.createElement('button'); b.className='chip';
+      b.innerHTML = lab(id)+' <span class="n">'+n+'</span>';
+      b.setAttribute('aria-pressed', S[key].includes(id));
+      b.onclick = ()=>{ const a=S[key]; const i=a.indexOf(id); i<0?a.push(id):a.splice(i,1);
+        b.setAttribute('aria-pressed', a.includes(id)); store.set(key,a); refresh(); };
+      box.appendChild(b);
+    });
+  }
+  for(const sel of [$('#f-from'),$('#f-to')]){ sel.innerHTML=''; d.verses.forEach(v=>sel.add(new Option(d.chapter+':'+v.v, v.v))); }
+  $('#f-from').value = S.from; $('#f-to').value = S.to;
+  renderMethod();
+  refresh(); panelEmpty();
+  scrollTo(0,0);
+}
+function sw(c){ return c==='hapax'||c==='rare' ? '<i class="sw rare"></i>' : '<i class="sw '+c+'" style="--c:'+CAT_COLOR(c)+'"></i>'; }
+
+// ---------- static controls
+$('#f-from').onchange = e=>{S.from=+e.target.value; if(S.to<S.from){S.to=S.from;$('#f-to').value=S.to} refresh()};
+$('#f-to').onchange = e=>{S.to=+e.target.value; if(S.from>S.to){S.from=S.to;$('#f-from').value=S.from} refresh()};
+function toggle(id,key,fn){ const b=$(id); b.setAttribute('aria-pressed',S[key]);
+  b.onclick=()=>{S[key]=!S[key]; b.setAttribute('aria-pressed',S[key]); if(key!=='only')store.set(key,S[key]); (fn||refresh)()}; }
+toggle('#f-names','names'); toggle('#f-lxx','lxx'); toggle('#f-syn','syn',()=>renderText()); toggle('#f-only','only',()=>renderInv());
+$('#f-q').oninput = e=>{S.q=e.target.value.trim(); renderInv()};
+$('#f-lx').onchange = e=>{S.lxf=e.target.value; renderInv()};
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+function setView(v){
+  S.view=v;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.view===v));
+  $('#v-text').hidden = v!=='text'; $('#v-inv').hidden = v!=='inv'; $('#v-method').hidden = v!=='method';
+}
+$('#theme').onclick = ()=>{
+  const cur = document.documentElement.getAttribute('data-theme') ||
+    (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const nx = cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',nx); store.set('theme',nx);
+};
+
+// ---------- reading view
+let wordItems = [];
+function renderText(){
+  if(!C) return;
+  const vis = ITEMS.filter(visible);
+  wordItems = W.map(()=>[]);
+  vis.forEach(it=>it.here.forEach(h=>h.forEach(i=>{ if(!wordItems[i].includes(it)) wordItems[i].push(it); })));
+  const rank = c=>CAT_ORDER.indexOf(c);
+  const LXX_V = {}; if(X) X.verses.forEach(v=>LXX_V[v.v]=v);
+  const notes = INSERT_NOTES[C.book+'/'+C.chapter] || {};
+  let h = '';
+  C.verses.forEach(v=>{
+    if(v.v<S.from || v.v>S.to) return;
+    let t = '', open = false;
+    v.words.forEach(i=>{
+      const its = wordItems[i];
+      const best = its.length ? its.slice().sort((a,b)=>rank(a.cat)-rank(b.cat))[0].cat : null;
+      const cls = 'w'+(best?' cat-'+best:'')+(STATUS[i]!=='common'?' lx-'+STATUS[i]:'');
+      if(!open){ t += '<span class="gw">'; open = true; }
+      if(W[i].t) t += '<span class="'+cls+'" data-w="'+i+'">'+esc(W[i].t)+'</span>';
+      if(W[i].tr){ t += '</span>'+esc(W[i].tr); open = false; }
+    });
+    if(open) t += '</span>';
+    const lv = LXX_V[v.v];
+    h += '<div class="verse" id="v'+v.v+'"><div class="vtext heb" lang="he">'+t+'</div><div class="vnum"><b>'+v.v+'</b></div>';
+    if(X && S.syn && lv) h += synopsis(lv);
+    if(X && notes[v.v] && S.lxx) h += '<div class="note-ins">'+esc(notes[v.v])+'</div>';
+    h += '</div>';
+  });
+  const el = $('#text'); el.innerHTML = h || '<p class="muted">No verses in range.</p>';
+  el.classList.toggle('lxx-on', !!X && S.lxx);
+  markSelection();
+}
+function synopsis(lv){
+  let r = '<div class="syn"><div class="syn-h"><span>Retroverted Hebrew <i>Vorlage</i> of the LXX (Stipp)</span><span>Greek'+(lv.lxx_ref?' · Stipp: '+esc(lv.lxx_ref):'')+'</span></div>';
+  lv.rows.forEach(row=>{
+    const og = row.og.map(([t,s])=>'<span class="'+(s==='minus'?'minus':s==='var'?'var':'')+'">'+esc(t)+'</span>').join(' ');
+    r += '<div class="srow"><span class="cl">'+esc(row.cl)+'</span><div class="og heb" lang="he">'+og+'</div><div class="gk grk" lang="grc">'+esc(row.gk)+'</div>'+
+         (row.notes?'<div class="nt" title="Stipp\'s apparatus">'+esc(row.notes)+'</div>':'')+'</div>';
+  });
+  return r+'</div>';
+}
+function markSelection(){
+  document.querySelectorAll('.w.sel,.w.wsel').forEach(e=>e.classList.remove('sel','wsel'));
+  if(S.item!=null && byId[S.item]){ byId[S.item].here.flat().forEach(i=>{ const e=document.querySelector('.w[data-w="'+i+'"]'); if(e) e.classList.add('sel'); }); }
+  if(S.word!=null){ const e=document.querySelector('.w[data-w="'+S.word+'"]'); if(e) e.classList.add('wsel'); }
+}
+$('#text').addEventListener('click', e=>{
+  const w = e.target.closest('.w'); if(!w) return;
+  const i = +w.dataset.w; S.word = i;
+  const its = wordItems[i];
+  if(its.length===1){ showItem(its[0].id); S.word = i; } else { S.item=null; showWord(i); }
+  markSelection();
+});
+const TIP = $('#tip');
+$('#text').addEventListener('mouseover', e=>{
+  const w = e.target.closest('.w'); if(!w){TIP.style.display='none';return}
+  const x = W[+w.dataset.w]; const st = STATUS[+w.dataset.w];
+  const m = x.m||{}; const morph = [m.sp,m.vs,m.vt,m.ps,m.nu,m.gn,m.st].filter(Boolean).join(' · ');
+  TIP.innerHTML = '<div class="h heb">'+esc(x.lexv)+'</div><div>'+esc(x.gl)+'</div><div class="m small">'+esc(x.lex)+' · '+esc(morph)+'</div>'+
+    (x.q?'<div class="small">Qere: <span class="heb">'+esc(x.q)+'</span></div>':'')+
+    (X&&st!=='common'?'<div class="small">LXX: '+(st==='plus'?'MT plus, absent from the Greek':'qualitative variant')+'</div>':'')+
+    '<div class="small muted">'+wordItems[+w.dataset.w].length+' item(s)</div>';
+  TIP.style.display='block';
+  const r = w.getBoundingClientRect();
+  TIP.style.left = Math.max(8, Math.min(r.left, innerWidth-TIP.offsetWidth-8))+'px';
+  TIP.style.top = (r.bottom+8+TIP.offsetHeight>innerHeight ? r.top-TIP.offsetHeight-8 : r.bottom+8)+'px';
+});
+$('#text').addEventListener('mouseleave', ()=>TIP.style.display='none');
+
+// ---------- inventory
+function catCell(c){ return '<span class="catdot">'+sw(c)+esc(CATS[c].short)+'</span>'; }
+function otherBooks(it){
+  const o = Object.keys(it.counts).filter(b=>b!==HOME);
+  return o.length<=P_.max_other && o.length ? o.length+' <span class="muted small">('+o.map(b=>esc(UNIT[b].en)).join(', ')+')</span>' : String(o.length);
+}
+function renderInv(){
+  if(!C) return;
+  const rows = ITEMS.filter(visibleInv);
+  const k = S.sort.k, d = S.sort.d;
+  const val = it => k==='cat' ? CAT_ORDER.indexOf(it.cat) : k==='kind' ? Object.keys(KINDS).indexOf(it.kind) : k==='ratio' ? (it.ratio==null?1e9:it.ratio) : it[k];
+  rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x<y?-1:x>y?1:0)*d || a.v1-b.v1; });
+  $('#count').textContent = rows.length+' of '+ITEMS.length+' items';
+  $('#inv tbody').innerHTML = rows.map(it=>
+    '<tr data-id="'+it.id+'"'+(it.id===S.item?' class="cur"':'')+'><td class="heb" lang="he">'+esc(it.label)+'</td><td class="gl">'+esc(it.gloss)+'</td><td>'+KINDS[it.kind]+
+    '</td><td>'+catCell(it.cat)+'</td><td class="num">'+it.verses.join(', ')+'</td><td class="num">'+it.freq+'</td><td class="num">'+it.home+
+    '</td><td class="num">'+otherBooks(it)+'</td><td class="num">'+(it.ratio==null?'—':it.ratio)+'</td>'+
+    (X?'<td>'+(it.lx==='plus'?'<span class="badge lx-plus">MT plus</span>':it.lx==='part'?'<span class="badge lx-var">partly</span>':'')+'</td>':'<td hidden></td>')+'</tr>').join('');
+  document.querySelectorAll('#inv th').forEach(th=>th.setAttribute('aria-sort', th.dataset.k===k?(d>0?'ascending':'descending'):'none'));
+}
+document.querySelectorAll('#inv th').forEach(th=>th.onclick=()=>{
+  const k=th.dataset.k; S.sort = {k, d: S.sort.k===k ? -S.sort.d : (['freq','home','ratio','nother'].includes(k)?-1:1)};
+  store.set('sort',S.sort); renderInv();
+});
+$('#inv tbody').addEventListener('click', e=>{ const tr=e.target.closest('tr'); if(tr) showItem(+tr.dataset.id); });
+
+// ---------- detail panel
+const P = $('#panel');
+function panelEmpty(){
+  P.innerHTML = '<h2 style="margin-top:0">Details</h2><p class="empty">Click a word in the text or a row in the inventory to see where an expression occurs in the Hebrew Bible.</p>'+
+   '<h2>This chapter at a glance</h2>'+
+   '<div class="tiles">'+CAT_ORDER.filter(c=>c!=='rare').map(c=>'<div class="tile"><b>'+ITEMS.filter(i=>i.cat===c).length+'</b><span>'+esc(CATS[c].short)+'</span></div>').join('')+'</div>'+
+   (X?'<p class="small muted">'+STATUS.filter(s=>s==='plus').length+' of '+W.length+' words of the MT are absent from the LXX (MT plus); '+STATUS.filter(s=>s==='var').length+' are part of a qualitative variant.</p>':'');
+}
+function itemLi(it){
+  return '<li data-id="'+it.id+'"><span>'+catCell(it.cat)+'</span><span class="heb" lang="he">'+esc(it.label)+'</span><span class="meta">'+KINDS[it.kind]+' · '+esc(it.gloss)+' · MT '+it.freq+', '+esc(UNIT[HOME].en)+' '+it.home+'</span></li>';
+}
+function showWord(i){
+  const its = wordItems[i].slice().sort((a,b)=>CAT_ORDER.indexOf(a.cat)-CAT_ORDER.indexOf(b.cat) || a.freq-b.freq);
+  const x = W[i];
+  P.innerHTML = '<h2 style="margin-top:0">Word in '+esc(ref(wVerse[i]))+'</h2><p class="d-title heb" lang="he">'+esc(x.t)+'</p><p class="d-gloss">'+esc(x.lexv)+' · '+esc(x.gl)+'</p>'+
+    (its.length ? '<h2>'+its.length+' items with this word</h2><ul class="ilist">'+its.map(itemLi).join('')+'</ul>' : '<p class="empty">No visible item contains this word. Check the filters above.</p>');
+  P.querySelectorAll('.ilist li').forEach(li=>li.onclick=()=>showItem(+li.dataset.id, true));
+  if(innerWidth<=1000) P.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function showItem(id, fromWord){
+  const it = byId[id]; if(!it) return; S.item = id;
+  try{ history.replaceState(null,'','#'+C.book+'/'+C.chapter+'/item='+id); }catch(e){}
+  markSelection();
+  document.querySelectorAll('#inv tr.cur').forEach(r=>r.classList.remove('cur'));
+  const tr = document.querySelector('#inv tr[data-id="'+id+'"]'); if(tr) tr.classList.add('cur');
+  if(!fromWord) S.word = null;
+  const hn = UNIT[HOME].en, cl = HB.abbr+' '+C.chapter;
+  const nb = Object.keys(it.counts).length;
+  P.innerHTML = (fromWord ? '<button class="back" id="back">← all items on this word</button>' : '')+
+    '<p class="d-title heb" lang="he">'+esc(it.label)+'</p>'+
+    (it.form && it.form!==it.label ? '<p class="d-gloss">form in '+esc(ref(it.v1))+': <span class="heb" style="font-size:18px">'+esc(it.form)+'</span></p>' : '')+
+    '<p class="d-gloss">'+esc(it.gloss)+'</p>'+
+    '<div class="badges"><span class="badge">'+KINDS[it.kind]+'</span><span class="badge">'+catCell(it.cat)+'</span>'+
+    (it.onlyHere?'<span class="badge">only in '+esc(cl)+'</span>':'')+
+    (X? (it.lx==='plus'?'<span class="badge lx-plus">MT plus: absent from LXX</span>':it.lx==='part'?'<span class="badge lx-var">partly MT plus / variant</span>':'<span class="badge">in MT and LXX</span>') : '')+
+    '</div><p class="small muted" style="margin:0">'+esc(CATS[it.cat].desc)+'.</p>'+
+    '<div class="tiles"><div class="tile"><b>'+it.here.length+'</b><span>'+esc(cl)+'</span></div><div class="tile"><b>'+it.home+'</b><span>'+esc(hn)+'</span></div>'+
+    '<div class="tile"><b>'+it.freq+'</b><span>MT total</span></div><div class="tile"><b>'+nb+'</b><span>books</span></div></div>'+
+    '<h2>In '+esc(cl)+'</h2><div class="vlinks">'+it.verses.map(v=>'<button data-v="'+v+'">'+C.chapter+':'+v+'</button>').join('')+'</div>'+
+    '<h2 style="display:flex;justify-content:space-between;align-items:center">Occurrences per book <span class="seg"><button data-rel="0" aria-pressed="'+!S.rel+'">count</button><button data-rel="1" aria-pressed="'+S.rel+'">per 10,000 words</button></span></h2>'+
+    '<div class="bars" id="bars"></div>'+
+    '<h2>Statistics</h2><dl class="stats"><dt>Log-likelihood (G²)</dt><dd>'+it.g2+' <span class="muted">'+esc(hn)+' vs. rest of the MT</span></dd>'+
+    '<dt>Frequency ratio</dt><dd>'+(it.ratio==null?'—':it.ratio+'× <span class="muted">as frequent in '+esc(hn)+' as elsewhere</span>')+'</dd>'+
+    (it.logdice!=null?'<dt>logDice</dt><dd>'+it.logdice+' <span class="muted">collocation strength (max 14)</span></dd>':'')+
+    '<dt>Lexemes</dt><dd>'+esc(it.key.filter(k=>!['object','subject','complement',''].includes(k)).join(' + '))+'</dd></dl>'+
+    '<h2>Concordance outside '+esc(cl)+' ('+it.nocc+')</h2><div id="conc"></div>';
+  if($('#back')) $('#back').onclick=()=>showWord(S.word);
+  P.querySelectorAll('.vlinks button').forEach(b=>b.onclick=()=>gotoVerse(+b.dataset.v));
+  P.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{S.rel=b.dataset.rel==='1'; store.set('rel',S.rel);
+    P.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed', (x.dataset.rel==='1')===S.rel)); bars(it);});
+  bars(it); conc(it, 60);
+  P.scrollTop = 0;
+  if(innerWidth<=1000) P.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function bars(it){
+  const books = Object.keys(it.counts).sort((a,b)=>UNIT[a].i-UNIT[b].i);
+  const val = b => S.rel ? it.counts[b]/UNIT[b].words*10000 : it.counts[b];
+  const max = Math.max(...books.map(val));
+  $('#bars').innerHTML = books.map(b=>{
+    const v = val(b), home = b===HOME;
+    const lab = S.rel ? v.toFixed(v<1?2:1) : v;
+    return '<span class="bk'+(home?' home':'')+'">'+esc(UNIT[b].en)+'</span><span class="track" title="'+esc(UNIT[b].en)+': '+it.counts[b]+' × ('+(it.counts[b]/UNIT[b].words*10000).toFixed(2)+' per 10,000 words)">'+
+      '<span class="bar'+(home?' home':'')+'" style="width:'+Math.max(1,(v/max)*82)+'%"></span><span class="val">'+lab+'</span></span>';
+  }).join('');
+}
+// verse index -> book
+function bookOfVerse(vi){ let lo=0, hi=BOOKLIST.length-1;
+  while(lo<hi){ const mid=(lo+hi+1)>>1; if(BOOKS[BOOKLIST[mid]].v0<=vi) lo=mid; else hi=mid-1; } return BOOKS[BOOKLIST[lo]]; }
+function decode(it){
+  return it.occ.map(o=>{
+    const head = Array.isArray(o) ? o[0] : o; const vi = Math.floor(head/256), off = head%256;
+    let pos;
+    if(it.kind==='lex') pos=[off]; else if(it.kind==='ngram'){ pos=[]; for(let k=off;k<=o[1];k++) pos.push(k); } else pos=[off].concat(o.slice(1));
+    return [vi, pos];
+  });
+}
+function conc(it, n){
+  const box = $('#conc');
+  if(!it.occ.length){ box.innerHTML='<p class="muted small">None: the expression occurs only in '+esc(HB.abbr+' '+C.chapter)+'.</p>'; return; }
+  const occ = decode(it);
+  const merged = []; occ.forEach(o=>{ const l=merged[merged.length-1]; if(l&&l[0]===o[0]) l[1]=l[1].concat(o[1]); else merged.push([o[0],o[1].slice()]); });
+  const shown = merged.slice(0,n);
+  box.innerHTML = '<p class="muted small">Loading text…</p>';
+  const cur = it.id;
+  getTexts(shown.map(([vi])=>bookOfVerse(vi).id)).then(()=>{
+    if(S.item!==cur) return;
+    const perBook = {}; merged.forEach(([vi])=>{ const b=bookOfVerse(vi).id; perBook[b]=(perBook[b]||0)+1; });
+    let h = it.nocc>it.occ.length ? '<p class="muted small">A sample of '+it.occ.length+' of '+it.nocc+' occurrences is stored, spread over all books. The per-book counts above are complete.</p>' : '';
+    let last=null;
+    shown.forEach(([vi,pos])=>{
+      const b = bookOfVerse(vi), [ch,vn,words] = TEXT[b.id][vi-b.v0];
+      if(b.id!==last){ h+='<div class="conc-book">'+esc(b.en)+' ('+perBook[b.id]+(perBook[b.id]>1?' verses':' verse')+')</div>'; last=b.id; }
+      const ps = new Set(pos);
+      h += '<div class="conc-line"><a class="ref" href="#'+b.id+'/'+ch+'" title="open this chapter">'+esc(b.abbr+' '+ch+':'+vn)+'</a><span class="heb" lang="he">'+
+        words.map((w,k)=>{ const core=w.replace(/[\s־׃]+$/,''); return ps.has(k)?'<mark>'+esc(core)+'</mark>'+esc(w.slice(core.length)):esc(w); }).join('')+'</span></div>';
+    });
+    if(merged.length>n) h += '<button class="more" id="more">Show all '+merged.length+' verses</button>';
+    box.innerHTML = h;
+    if($('#more')) $('#more').onclick=()=>conc(it, 1e9);
+  }).catch(e=>{ box.innerHTML='<p class="muted small">Could not load the text ('+esc(e.message)+').</p>'; });
+}
+function gotoVerse(v){
+  setView('text');
+  if(v<S.from||v>S.to){ S.from=C.verses[0].v; S.to=C.verses[C.verses.length-1].v; $('#f-from').value=S.from; $('#f-to').value=S.to; renderText(); }
+  const el = document.getElementById('v'+v); if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+}
+
+// ---------- method text
+function renderMethod(){
+  const hn = UNIT[HOME].en;
+  $('#method').innerHTML = `
+<h2>What is in this inventory?</h2>
+<p>Every expression in ${esc(HB.en)} ${C.chapter} is checked against the whole Hebrew Bible (BHSA 2021, ETCBC) and compared with its own book, here <b>${esc(hn)}</b>. Four types of expression are extracted:</p>
+<ul>
+<li><b>Word</b>: a single lexeme.</li>
+<li><b>Phrase</b>: a contiguous sequence of 2–${P_.ngram_max} lexemes within a verse. The article and the conjunction <span class="heb">וְ</span> are ignored when matching, so <span class="heb">לְשַׁמָּה וְלִשְׁרֵקָה</span> also matches <span class="heb">לְשַׁמָּה לִשְׁרֵקָה</span>. Pronominal suffixes are ignored, because the comparison is made on lexemes. A phrase may not end in a preposition, conjunction, article or a noun in the construct state. Phrases that occur with the same frequency and always overlap are joined into one longer phrase. A shorter phrase is dropped if a longer phrase contains it and covers at least 80% of its occurrences.</li>
+<li><b>Collocation</b>: two content words (noun, verb, adjective, proper noun) in the same clause, at any distance and in any order. Only pairs with a logDice of at least ${P_.pair_logdice} are kept, and pairs already inside a listed phrase are left out.</li>
+<li><b>Verb + argument</b>: the predicate verb with the head of its subject, object or complement phrase, plus the preposition if there is one (e.g. <span class="heb">שׂים לְ שַׁמָּה</span>). This uses the BHSA phrase functions.</li>
+</ul>
+<h2>Categories</h2>
+<ul>
+<li><b>Word only in ${esc(hn)}</b>: a single word (lexeme) that occurs at least twice in the MT, every time in ${esc(hn)}. This category is for vocabulary only: a phrase found in just one book is much less unusual, so it falls under the next category.</li>
+<li><b>${esc(hn)} + ≤ ${P_.max_other} other books</b>: occurs in ${esc(hn)} and in at most ${P_.max_other} other books. For phrases, collocations and verb + argument combinations this includes those found only in ${esc(hn)} (0 other books). Items marked “only in ${esc(HB.abbr)} ${C.chapter}” occur only in this chapter.</li>
+<li><b>Preferred by ${esc(hn)}</b>: occurs in more books than that, but is clearly overrepresented in ${esc(hn)}: at least ${P_.home_min} times in ${esc(hn)}, log-likelihood G² ≥ ${P_.g2_min} (p &lt; .001), and a relative frequency at least ${P_.ratio_min} times that of the rest of the MT.</li>
+<li><b>Hapax / rare</b>: single words that occur once, or at most ${P_.rare_max} times, in the MT.</li>
+</ul>
+<p>1–2 Samuel, 1–2 Kings and 1–2 Chronicles each count as one book. Ezra and Nehemiah count as two separate books. Expressions that fit none of these categories are not listed. Glosses are the BHSA's lexeme glosses: short English labels, not translations. For very frequent expressions the concordance holds a sample of ${P_.occ_cap} verses spread over all books; the counts per book are always complete.</p>
+<h2>MT and LXX</h2>
+<p>For Jeremiah and 2 Kings 25 the MT/LXX comparison comes from Hermann-Josef Stipp, <i>Textkritische Synopse zum Jeremiabuch</i> (15th corrected internal edition, 2021), in the web edition at <a href="https://martijnnaaijer.github.io/mt_greek_jeremiah/">martijnnaaijer.github.io/mt_greek_jeremiah</a>. Stipp's masoretic column is aligned letter by letter with the BHSA words. Each word is then marked as an <b>MT plus</b> (not represented in the Greek) or as part of a <b>qualitative variant</b>. The synopsis boxes show Stipp's retroverted Hebrew <i>Vorlage</i> of the LXX, with Greek pluses in blue and variants in yellow, together with his Greek text and apparatus. All readings and reconstructions are Stipp's; check his synopsis before citing anything. Other books have no LXX layer.</p>
+<h2>Caveats</h2>
+<ul>
+<li>Lexeme matching can't see differences in verb stem or in suffixes. Check the concordance before drawing conclusions.</li>
+<li>Counts are per occurrence. Overlapping repetitions within one verse can count twice.</li>
+<li>The thresholds are choices. Change them in <code>scripts/extract_bhsa.py</code> and rebuild with <code>python scripts/build.py</code>.</li>
+</ul>`;
+}
+
+function refresh(){ renderText(); renderInv(); if(S.item!=null && (!byId[S.item] || !visible(byId[S.item]))) {S.item=null; panelEmpty();} }
+
+// ---------- start
+loadScript('data/index.js').then(()=>{
+  P_ = IDX.params;
+  IDX.units.forEach((u,i)=>UNIT[u.id]={...u,i});
+  IDX.books.forEach(b=>{BOOKS[b.id]=b; BOOKLIST.push(b.id);});
+  buildNav(); fromHash();
+}).catch(()=>{ $('#text').innerHTML='<p class="muted">The data files are missing. Run <code>python scripts/build.py</code> first.</p>'; });
+})();
+</script>
+</body>
+</html>
