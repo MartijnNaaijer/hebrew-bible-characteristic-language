@@ -9,6 +9,19 @@ vocabulary unique to the book, words and phrases shared with only a few other bo
 expressions the book clearly prefers. It is shown in one app page (`docs/index.html`) with
 book/chapter navigation, which may later be published with GitHub Pages. See `README.md` for usage.
 
+## User and repository
+
+- The user is Martijn Naaijer, a Hebrew Bible scholar who works with the BHSA. He made the web edition of Stipp's
+  synopsis that the LXX layer uses. He works with friends on the Jeremiah translation.
+- The git repository is **hebrew-bible-characteristic-language**, on branch `main`. The project folder was
+  renamed to match; it was previously `jeremia_vertalingen_lugtigheid`.
+  Repo-local git config: `user.name "Martijn Naaijer"`, `core.autocrlf false`.
+- The repo is not on GitHub yet, and `gh` is not installed. The intended setup is
+  `https://github.com/MartijnNaaijer/hebrew-bible-characteristic-language`, with Pages serving from
+  `main` / `docs` (the `docs/.nojekyll` file is already there). Ask before pushing or publishing anything.
+- `docs/` (including the ~170 MB of generated data) is committed on purpose, so that Pages can serve it.
+  `data/raw/` (the Stipp page cache) is ignored.
+
 ## Commands
 
 ```
