@@ -34,3 +34,18 @@ The thresholds are at the top of `extract_bhsa.py`: `MAX_OTHER`, `G2_MIN`, `RATI
 
 Book counting: 1–2 Samuel, 1–2 Kings and 1–2 Chronicles each count as one book.
 Ezra and Nehemiah count as two separate books (`BOOK_UNIT` in `extract_bhsa.py`).
+
+## Sources
+
+- **BHSA**: Eep Talstra Centre for Bible and Computer (ETCBC), *Biblia Hebraica
+  Stuttgartensia Amstelodamensis* (BHSA), version 2021. Vrije Universiteit Amsterdam.
+  DOI: [10.5281/zenodo.1007624](https://doi.org/10.5281/zenodo.1007624).
+  Loaded with [Text-Fabric](https://github.com/annotation/text-fabric).
+- **Stipp**: Hermann-Josef Stipp, *Textkritische Synopse zum Jeremiabuch*, 15. korrigierte
+  interne Auflage, April 2021. Used through the web edition by Martijn Naaijer,
+  <https://martijnnaaijer.github.io/mt_greek_jeremiah/>. All LXX readings and
+  retroversions in the MT/LXX layer are Stipp's.
+
+## License
+
+[CC BY-NC 4.0](LICENSE).
